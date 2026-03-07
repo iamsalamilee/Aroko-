@@ -77,7 +77,17 @@ Return ONLY the continuation text, nothing else:`;
             prompt,
         });
 
-        return { success: true, result: result.trim() };
+        let cleanedResult = result.trim();
+
+        // Strip hallucinated citations when no sources are uploaded
+        if (type === 'write' && (!knowledgeContext || knowledgeContext.trim().length === 0)) {
+            // Remove (Author, Year) patterns like (Smith, 2021) or (López et al., 2019)
+            cleanedResult = cleanedResult.replace(/\s*\([A-Z][a-zA-Záéíóúñü]+(?:\s+(?:et\s+al\.|&\s+[A-Z][a-zA-Z]+))?,?\s*\d{4}\)/g, '');
+            // Remove any leftover double spaces
+            cleanedResult = cleanedResult.replace(/\s{2,}/g, ' ');
+        }
+
+        return { success: true, result: cleanedResult };
     } catch (error: any) {
         console.error('Transform error (internal):', error?.message || error);
         return { success: false, error: sanitizeAIError(error) };
