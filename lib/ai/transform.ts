@@ -50,9 +50,9 @@ CITATION RULES:
 ` : ''}
 
 CONTEXT TO CONTINUE FROM:
-"""
+---
 ${text}
-"""
+---
 
 TASK: Read the context carefully. Notice the section heading (if present) and the existing content. Continue writing 2-3 sentences that:
 1. Match the section's purpose (e.g., "Problem Statement" = problems, "Objectives" = goals, "Literature Review" = research findings)
