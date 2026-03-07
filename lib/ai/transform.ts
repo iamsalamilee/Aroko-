@@ -28,7 +28,6 @@ export async function transformTextAction(
         let prompt = '';
 
         if (type === 'write') {
-            // Simplified prompt - trust AI to understand context naturally
             const hasSources = knowledgeContext && knowledgeContext.trim().length > 0;
 
             console.log('=== WRITE MODE ===');
@@ -36,38 +35,57 @@ export async function transformTextAction(
             console.log('Has sources:', hasSources);
             console.log('==================');
 
-            prompt = `You are an expert academic writing assistant.
+            if (hasSources) {
+                // WITH sources: full academic mode with citations
+                prompt = `You are an expert academic writing assistant.
 
 DOCUMENT TOPIC: "${topic || 'Academic paper'}"
 
-${hasSources ? `RESEARCH SOURCES (use for citations):
+RESEARCH SOURCES (use for citations):
 ${knowledgeContext}
 
 CITATION RULES:
 - Use ONLY citations from [CITE AS: (Author, Year)] labels above
 - Format: (AuthorName, Year) as shown in the labels
 - NEVER invent citations - only use what's provided
-` : ''}
 
 CONTEXT TO CONTINUE FROM:
 ---
 ${text}
 ---
 
-TASK: Read the context carefully. Notice the section heading (if present) and the existing content. Continue writing 2-3 sentences that:
-1. Match the section's purpose (e.g., "Problem Statement" = problems, "Objectives" = goals, "Literature Review" = research findings)
+TASK: Continue writing 2-3 sentences that:
+1. Match the section's purpose
 2. Flow naturally from the existing text
-3. Stay on topic and maintain academic style
-${hasSources ? `4. Synthesize citations naturally (avoid "as seen in X", "as discussed in Y" repetitive patterns)
-5. CITATION FORMAT: Use ONLY parenthetical style like (Author, Year). NEVER use narrative style like "Author (Year)" or "as explored by Author (Year)"` : `4. DO NOT include ANY citations or references like (Author, Year). No sources were provided, so you MUST NOT fabricate, invent, or hallucinate any author names, years, or references.`}
+3. Maintain academic style
+4. Synthesize citations naturally
+5. CITATION FORMAT: Use ONLY parenthetical style like (Author, Year)
 
-NEGATIVE CONSTRAINTS (CRITICAL):
-- DO NOT repeat phrases verbatim (e.g., never repeat "By leveraging these technologies..." if used recently).
-- DO NOT start every sentence with "The use of..." or "The integration of...". Vary your sentence structure.
-- DO NOT just list citations one by one; group ideas together.
-${!hasSources ? `- ABSOLUTELY DO NOT include ANY citations. No (Author, Year), no (Smith, 2021), no references at all. Write general academic prose ONLY.` : ''}
+NEGATIVE CONSTRAINTS:
+- DO NOT repeat phrases verbatim.
+- DO NOT start every sentence the same way. Vary sentence structure.
+- DO NOT list citations one by one; group ideas together.
 
 Return ONLY the continuation text, nothing else:`;
+            } else {
+                // WITHOUT sources: clean writing, NO academic citation behavior
+                prompt = `Continue writing the following text. Write 2-3 clear, well-written sentences that flow naturally from what's already written. Stay on the same topic.
+
+Topic: "${topic || 'General'}"
+
+Text so far:
+---
+${text}
+---
+
+Rules:
+- Continue naturally from where the text left off
+- Match the tone and style of the existing text
+- Do NOT add any references, sources, or parenthetical notes
+- Do NOT add author names with years in parentheses
+- Just write clean, informative prose
+- Return ONLY the continuation, nothing else:`;
+            }
         } else {
             prompt = `${PROMPTS[type]}\n\n"${text}"`;
         }
@@ -81,10 +99,12 @@ Return ONLY the continuation text, nothing else:`;
 
         // Strip hallucinated citations when no sources are uploaded
         if (type === 'write' && (!knowledgeContext || knowledgeContext.trim().length === 0)) {
-            // Remove (Author, Year) patterns like (Smith, 2021) or (López et al., 2019)
-            cleanedResult = cleanedResult.replace(/\s*\([A-Z][a-zA-Záéíóúñü]+(?:\s+(?:et\s+al\.|&\s+[A-Z][a-zA-Z]+))?,?\s*\d{4}\)/g, '');
-            // Remove any leftover double spaces
-            cleanedResult = cleanedResult.replace(/\s{2,}/g, ' ');
+            // Remove ALL parenthetical citation patterns:
+            // (Smith, 2020) | (Smith & Jones, 2021) | (Smith et al., 2019)
+            // (Smith, 2020; Jones, 2021) | (e.g., Smith, 2020)
+            cleanedResult = cleanedResult.replace(/\s*\([^)]*\d{4}[^)]*\)/g, '');
+            // Remove any leftover double spaces or trailing punctuation issues
+            cleanedResult = cleanedResult.replace(/\s{2,}/g, ' ').replace(/\s+\./g, '.').replace(/\s+,/g, ',');
         }
 
         return { success: true, result: cleanedResult };
