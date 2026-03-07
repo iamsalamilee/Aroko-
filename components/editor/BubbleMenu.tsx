@@ -177,11 +177,10 @@ export default function EditorBubbleMenu({ editor }: EditorBubbleMenuProps) {
                 knowledgeContext = getContextFromSources(sources, topic || textToProcess, 10000);
             }
 
-            // Add chat preferences (e.g., Nigeria, West Africa, CNN, LightGBM)
+            // Add chat preferences so AI remembers what we've discussed
             const preferences = getPreferenceContext();
             if (preferences) {
                 knowledgeContext = preferences + '\n\n' + knowledgeContext;
-                console.log('Write mode - preferences:', preferences);
             }
         } else {
             // For other modes, get selected text

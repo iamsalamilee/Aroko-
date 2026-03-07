@@ -28,7 +28,8 @@ export async function transformTextAction(
         let prompt = '';
 
         if (type === 'write') {
-            const hasSources = knowledgeContext && knowledgeContext.trim().length > 0;
+            // Only true if actual research papers are in the context (not just chat history)
+            const hasSources = knowledgeContext && knowledgeContext.includes('[CITE AS:');
 
             console.log('=== WRITE MODE ===');
             console.log('Topic:', topic);
