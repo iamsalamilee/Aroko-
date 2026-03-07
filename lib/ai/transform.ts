@@ -59,12 +59,13 @@ TASK: Read the context carefully. Notice the section heading (if present) and th
 2. Flow naturally from the existing text
 3. Stay on topic and maintain academic style
 ${hasSources ? `4. Synthesize citations naturally (avoid "as seen in X", "as discussed in Y" repetitive patterns)
-5. CITATION FORMAT: Use ONLY parenthetical style like (Author, Year). NEVER use narrative style like "Author (Year)" or "as explored by Author (Year)"` : ''}
+5. CITATION FORMAT: Use ONLY parenthetical style like (Author, Year). NEVER use narrative style like "Author (Year)" or "as explored by Author (Year)"` : `4. DO NOT include ANY citations or references like (Author, Year). No sources were provided, so you MUST NOT fabricate, invent, or hallucinate any author names, years, or references.`}
 
 NEGATIVE CONSTRAINTS (CRITICAL):
 - DO NOT repeat phrases verbatim (e.g., never repeat "By leveraging these technologies..." if used recently).
 - DO NOT start every sentence with "The use of..." or "The integration of...". Vary your sentence structure.
 - DO NOT just list citations one by one; group ideas together.
+${!hasSources ? `- ABSOLUTELY DO NOT include ANY citations. No (Author, Year), no (Smith, 2021), no references at all. Write general academic prose ONLY.` : ''}
 
 Return ONLY the continuation text, nothing else:`;
         } else {
