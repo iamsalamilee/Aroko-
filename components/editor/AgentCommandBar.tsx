@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { generateDocumentAction } from '@/lib/ai/actions';
+import { chatWithContextAction } from '@/lib/ai/actions';
 import { Loader2, Sparkles, Send } from 'lucide-react';
 
 interface AgentCommandBarProps {
@@ -19,10 +19,10 @@ export default function AgentCommandBar({ onDataReceived }: AgentCommandBarProps
         setIsLoading(true);
 
         // Call the Server Action
-        const result = await generateDocumentAction(input);
+        const result = await chatWithContextAction(input);
 
         if (result.success) {
-            onDataReceived(result.data); // Send JSON up to parent
+            onDataReceived(result.response);
         } else {
             alert("AI Error: " + result.error);
         }
