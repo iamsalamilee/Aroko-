@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AROKO: AI-Powered Academic Editor 🎓
 
-## Getting Started
+AROKO is an intelligent, context-aware document editor built specifically to solve the biggest pain points for university students and academic researchers. It features integrated AI writing assistance powered entirely by **Amazon Nova** foundation models via AWS Bedrock.
 
-First, run the development server:
+## 🏆 Built for the Amazon Nova AI Hackathon
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project was built to showcase the power, speed, and cost-effectiveness of Amazon Nova models for complex, document-heavy AI tasks. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Powered By:**
+- **Amazon Nova Lite**: Handles high-volume, rapid in-line editing (paraphrasing, improving sentences) with blazing fast latency, ensuring the editor feels responsive without breaking the bank for students.
+- **Amazon Nova Pro**: Powers deep contextual reasoning when writing entire paragraphs, synthesizing multiple uploaded references, or extracting complex JSON from data tables.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Key Features & Technical Highlights
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Unlike standard ChatGPT wrappers that frequently hallucinate academic sources, AROKO is built as a complete academic workspace:
 
-## Learn More
+1. **Context-Aware AI Editor**: Select any text in the document or press `/` to trigger the AI menu. The system automatically reads the surrounding text and the nearest section heading to understand *exactly* where the user is in their paper, providing highly relevant completions.
+2. **Strict Citation Registry**: AROKO enforces strict adherence to uploaded sources. The prompt engineering explicitly prevents the AI from fabricating fake papers or authors, instead relying on a customized in-memory citation registry built from user-uploaded PDFs.
+3. **Smart Table-to-Chart Visualizations**: Researchers often struggle with visualizing data. AROKO can instantly parse markdown/HTML tables, feed the data to **Amazon Nova Pro**, and output a clean, interactive React chart (Bar, Line, Pie, Scatter) seamlessly inserted directly into the document.
+4. **Tailored Tone Controls**: Built-in prompts instantly flip writing styles from "casual" to "formal scholarly publication" mode.
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack
+- **Framework:** Next.js 15 (App Router), React
+- **AI Models:** Amazon Nova Lite & Nova Pro (via AWS Bedrock)
+- **Editor:** Tiptap framework for customized rich text
+- **Styling:** Tailwind CSS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To run AROKO locally:
 
-## Deploy on Vercel
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set your environment variables in `.env.local`
+   ```env
+   AWS_ACCESS_KEY_ID=your_key
+   AWS_SECRET_ACCESS_KEY=your_secret
+   AWS_REGION=us-east-1
+   ```
+4. Start the Dev Server
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) to start writing!
