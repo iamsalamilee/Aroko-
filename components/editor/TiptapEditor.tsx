@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 import EditorBubbleMenu from './BubbleMenu';
 import FontSize from '@/lib/editor/FontSize';
 import { ChartNode } from '@/lib/tiptap/chart-extension';
+import { InlineDiff } from '@/lib/tiptap/inline-diff-extension';
 
 interface TiptapEditorProps {
     content?: string | null;
@@ -47,6 +48,7 @@ export default function TiptapEditor({ className, onEditorReady, externalData }:
             TableHeader,
             TableCell,
             ChartNode, // Custom chart node for rendering Recharts
+            InlineDiff, // VS Code style inline diffs
         ],
         content: '<p>Start writing or ask AROKO to generate content...</p>',
         immediatelyRender: false,

@@ -20,14 +20,6 @@ export async function chatWithContextAction(
     conversationHistory: ChatMessage[] = []
 ) {
     try {
-        // Build conversation context from history (last 6 messages for efficiency)
-        const recentHistory = conversationHistory.slice(-6);
-        const historyContext = recentHistory.length > 0
-            ? `\n## CONVERSATION HISTORY\n${recentHistory.map(m =>
-                `${m.role === 'user' ? 'User' : 'AROKO'}: ${m.content.substring(0, 500)}`
-            ).join('\n\n')}\n`
-            : '';
-
         const systemPrompt = `You are AROKO, an expert research mentor and AI assistant. You're like having a PhD advisor in your pocket - knowledgeable, proactive, and genuinely invested in helping the user succeed.
 
 ## YOUR ROLE
@@ -56,8 +48,8 @@ Don't just answer - anticipate what they'll need next:
 - "You mentioned CNN - have you considered data augmentation for your limited dataset?"
 - "For Nigeria specifically, you might want to look at local weather APIs and FAOSTAT data..."
 - "Before building, you should validate with farmers - consider a simple survey first..."
-${historyContext}
-${context ? `## KNOWLEDGE FROM UPLOADED PAPERS
+
+${context ? `## KNOWLEDGE FROM UPLOADED PAPERS OR CURRENT DOCUMENT
 ${context}
 
 When citing: use (Author, Year) format from [CITE AS:] labels. Connect ideas across papers.
@@ -69,29 +61,21 @@ When citing: use (Author, Year) format from [CITE AS:] labels. Connect ideas acr
 - Give concrete examples (model names, dataset names, specific steps)
 - End with a forward-moving question or next step
 - Keep it focused (avoid walls of text)
-- If continuing a conversation, acknowledge previous context
+- ALWAYS consider the previous conversation context before replying!`;
 
-## EXAMPLE GOOD RESPONSE
-User: "I want to make an AI app for farmers"
-Response: "Great idea! Here's how I'd structure this:
-
-**Core Components:**
-- 📸 Image diagnosis (CNN for crop/livestock diseases)
-- 📊 Advisory engine (rules + ML for recommendations)
-- 📱 Mobile-first UI (farmers often use basic smartphones)
-
-**Quick wins to start:**
-1. Pick ONE problem first (e.g., just tomato disease detection)
-2. Grab a dataset from PlantVillage on Kaggle
-3. Train a simple CNN classifier
-
-What's your main focus - crops, livestock, or general farming advice?"
-
-USER MESSAGE: "${message}"`;
+        const messages: any[] = [
+            { role: 'system', content: systemPrompt },
+            // Only keep last 8 messages to prevent context overflow
+            ...conversationHistory.slice(-8).map(m => ({
+                role: m.role === 'user' ? 'user' : 'assistant',
+                content: m.content
+            })),
+            { role: 'user', content: message }
+        ];
 
         const { text } = await generateText({
             model: getTextModel(),
-            prompt: systemPrompt,
+            messages,
             temperature: 0.7,
         });
 

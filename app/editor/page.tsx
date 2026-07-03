@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import MainLayout from "@/components/layout/MainLayout";
 import TiptapEditor from "@/components/editor/TiptapEditor";
+import AgentCommandBar from "@/components/editor/AgentCommandBar";
 import { type DocumentStructure } from "@/lib/schemas/document-schema";
 import {
     getCurrentDocument,
@@ -162,6 +163,11 @@ export default function Home() {
                     onEditorReady={handleEditorReady}
                 />
             </div>
+            {/* HIDING SURGICAL EDIT FOR NOW (STILL IN CODEBASE)
+            {editor && (
+                <AgentCommandBar editor={editor} />
+            )}
+            */}
         </MainLayout>
     );
 }
